@@ -4,8 +4,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import Bot, Dispatcher, Router
 from config import settings
 from Handlers import start, registration_check, other_handlers
+from Handlers.lessons import today
 from DataBase.connect import engine, Base
-from Parser.lessons import add_lessons_to_table
+from Apscheduler.lessons import add_lessons_to_table
 
 
 
@@ -19,9 +20,11 @@ async def main() -> None:
     bot = Bot(token=settings.BOT_TOKEN)
     dp = Dispatcher()
     
+
     dp.include_router(registration_check.router)
     
     dp.include_router(start.router)
+    dp.include_router(today.router)
     
     dp.include_router(other_handlers.router)
     

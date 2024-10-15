@@ -1,5 +1,4 @@
 import requests
-import datetime
 from bs4 import BeautifulSoup as bs
 
 url_groups = dict()
@@ -15,7 +14,7 @@ def url_groups_update():
     groups = soup.find_all('a', class_='z0')
 
     for group in groups:
-        url_groups[group.text] = group.get('href')
+        url_groups[int(group.text)] = group.get('href')
         group_to_group_gict[group.text] = group.text
         groups_list.append(group.text)
 url_groups_update()

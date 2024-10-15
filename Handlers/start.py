@@ -42,13 +42,13 @@ async def log(callback: CallbackQuery):
         await callback.message.edit_text(
             text=f'•{" "*40}•',
             reply_markup=create_inline_kb(2,
-                                          today_button='пары',
+                                          day_0='пары',
                                           settings='меню',
                                           fast_success='быстрый доступ'))
     await callback.answer()
 
 
-@router.callback_query(F.data.in_(url_groups))
+@router.callback_query(F.data.in_(group_to_group_gict))
 async def add_group(callback: CallbackQuery):
     id = callback.from_user.id
     user = await User.user_info(id)
@@ -73,7 +73,7 @@ async def add_subgroup(callback: CallbackQuery):
     await callback.message.edit_text(
             text=f'•{" "*40}•',
             reply_markup=create_inline_kb(2,
-                                          today_button='пары',
+                                          day_0='пары',
                                           settings='меню',
                                           fast_success='быстрый доступ'))
     await callback.answer()

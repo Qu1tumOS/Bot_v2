@@ -78,7 +78,6 @@ def lessons_one_day() -> dict:
     return rasp
 
 async def add_lessons_to_table():
-    print('add')
     today = date.today()
     date_site = date_in_site()
 
@@ -92,7 +91,6 @@ async def add_lessons_to_table():
             logger.error(f'error - [{x}]')
 
     elif date_site > today and not await Lesson.find_one_or_none(day=today):
-        # logger.info(f'added None day...')
         try:
             await Lesson.add(
                 day=today
