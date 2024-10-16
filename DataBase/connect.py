@@ -37,7 +37,6 @@ class User(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(nullable=True)
     user_name: Mapped[str] = mapped_column(nullable=True)
-    collage: Mapped[str] = mapped_column(nullable=True)
     group: Mapped[int] = mapped_column(nullable=True)
     subgroup: Mapped[int] = mapped_column(nullable=True)
     date_of_registration: Mapped[date]

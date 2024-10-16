@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import BaseFilter
 from aiogram.types import CallbackQuery
 
-from Parser.parser import url_groups, group_to_group_gict
+from Parser.parser import group_to_group_gict
 from Keyboard.inline_creator import create_inline_kb
 from DataBase.dao import User
 
@@ -29,9 +29,10 @@ async def check_register(callback: CallbackQuery):
     )
     await callback.answer()
 
-@router.callback_query(~F.data.in_(url_groups), ~F.data.in_(['subgroup_1', 'subgroup_2', 'log_button', 'NST']), GroupCheck())
+@router.callback_query(~F.data.in_(group_to_group_gict), ~F.data.in_(['subgroup_1', 'subgroup_2', 'log_button']), GroupCheck())
 async def check_group(callback: CallbackQuery):
     user = await User.user_info(callback.from_user.id)
+    print('suuuuuuuu')
 
     if user.group == None:
         await callback.message.edit_text(

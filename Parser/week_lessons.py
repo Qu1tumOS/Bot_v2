@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from Parser.parser import url_groups
 from datetime import date, timedelta
-from DataBase.dao import Lesson, User
+from DataBase.dao import Lesson
 from pprint import pprint
 
 
@@ -23,42 +23,32 @@ def group_par(group: str) -> dict:
 
     for tr in data[begin:end]:
         two_subgroup_para = []
+        
         for td in tr:
-            check_para = td.find('a', class_='z1')
-            check_cab = td.find('a', class_='z2')
-            para = check_para.text if check_para else ' - '
-            cab = check_cab.text if check_cab else ' - '
-            del_sunday_date = None
+            para = td.find('a', class_='z1').text if td.find('a', class_='z1') else ' - '
+            cab = td.find('a', class_='z2').text if td.find('a', class_='z2') else ' - '
+            teacher = td.find('a', class_='z3').text if td.find('a', class_='z3') else ' - '
             
-            if para.split('.', 1)[0] in descript:
+            if para.split('.', 1)[0] in descript: #удаление ненужных префиксов из названий предметов
                 para = para.split('.', 1)[1][2:]
                 if para[0] == ' ':
                     para = para.replace(' ', '', 1)
+                    
+            info = [para, cab, teacher]
+            info_for_all = [info, info]
 
-            if td.get('rowspan') == '6':
-                date_site = td.text[:-4]
+
+            if td.get('rowspan') == '6': # дата пар 
+                date_site: str = td.text[:-4]
                 rasp[date_site] = []
 
-            elif td.get('class') == ['nul']:
+            elif td.get('class') in [['nul'], ['ur']]:
                 if td.get('colspan') == '2':
-                    rasp[date_site].append([[para, cab], [para, cab]])
+                    rasp[date_site].append(info_for_all)
                 else:
-                    if not two_subgroup_para:
-                        two_subgroup_para.append([para, cab])
-                    else:
-                        two_subgroup_para.append([para, cab])
+                    two_subgroup_para.append(info)
+                    if len(two_subgroup_para) == 2:
                         rasp[date_site].append(two_subgroup_para)
-
-            elif td.get('class') == ['ur']:
-                if td.get('colspan') == '2':
-                    rasp[date_site].append([[para, cab], [para, cab]])
-                else:
-                    if not two_subgroup_para:
-                        two_subgroup_para.append([para, cab])
-                    else:
-                        two_subgroup_para.append([para, cab])
-                        rasp[date_site].append(two_subgroup_para)
-
     return rasp
 
 
@@ -69,16 +59,10 @@ async def print_day(user, timedelta_day: int = 0):
     lessons_list = group_par(user.group)
     pprint(lessons_list)
     
-    weeks_day = ['пн',
-                 'вт',
-                 'ср',
-                 'чт',
-                 'пт',
-                 'сб']
+    week = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'][date_datetime.weekday()]
      
         
     if date_str in lessons_list:
-        week = weeks_day[date_datetime.weekday()]
         tabs = 24
         output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
         

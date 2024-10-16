@@ -29,9 +29,13 @@ async def log(callback: CallbackQuery):
         await User.add(id=callback.from_user.id,
                        name=callback.from_user.username,
                        user_name=callback.from_user.first_name,
-                       collage='НСТ',
                        date_of_registration=date.today())
 
+        await callback.message.edit_text(
+            text='Выбери свою группу и подгруппу',
+            reply_markup=create_inline_kb(6,
+                                          **group_to_group_gict))
+        
     elif not user.subgroup:
         await callback.message.edit_text(
             text='Выбери свою группу и подгруппу',
