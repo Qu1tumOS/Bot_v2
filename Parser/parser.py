@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 
-url_groups = dict()
+url_groups = {'all': 'hg.htm'}
 group_to_group_gict = dict()
 groups_list = list()
 
@@ -17,4 +17,5 @@ def url_groups_update():
         url_groups[int(group.text)] = group.get('href')
         group_to_group_gict[group.text] = group.text
         groups_list.append(group.text)
+
 url_groups_update()

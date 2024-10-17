@@ -4,12 +4,12 @@ from Parser.parser import url_groups
 from datetime import date, timedelta
 from DataBase.dao import Lesson
 from pprint import pprint
-
+import redis, json
 
 
 
 def group_par(group: str) -> dict:
-    descript = 'ПМ. ОП. ОГСЭ. ЕН. ОУД.'
+    descript = 'ПМ. ОП. ОГСЭ. ЕН. ОУД. СГ.'
     url = 'http://raspisanie.nnst.ru/public/www/' + url_groups[group]
 
     response = requests.get(url)
@@ -33,8 +33,9 @@ def group_par(group: str) -> dict:
                 para = para.split('.', 1)[1][2:]
                 if para[0] == ' ':
                     para = para.replace(' ', '', 1)
+            para = para[:-4] if para in ['Экологические основы при'] else para
                     
-            info = [para, cab, teacher]
+            info = [para, cab, teacher] # данные будут храниться в таком типе [предмет, кабинет, преподователь]
             info_for_all = [info, info]
 
 
@@ -53,11 +54,23 @@ def group_par(group: str) -> dict:
 
 
 async def print_day(user, timedelta_day: int = 0):
+    redis_connect = redis.Redis(host='localhost')
+    
+    value = redis_connect.get(name=f'{str(user.group)}')
+    if not value:
+        redis_connect.set(
+            name=f'{str(user.group)}', 
+            value=json.dumps(group_par(user.group)), 
+            ex=60*5
+            )
+        value = redis_connect.get(name=f'{str(user.group)}')
+    redis_connect.close()
+
+    
+    lessons_list = json.loads(value)
     date_datetime = date.today() + timedelta(days=timedelta_day)
     date_in_base = await Lesson.find_one_or_none(day=date_datetime)
     date_str = f'{date_datetime:%d.%m.%Y}'
-    lessons_list = group_par(user.group)
-    pprint(lessons_list)
     
     week = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'][date_datetime.weekday()]
      
@@ -75,8 +88,7 @@ async def print_day(user, timedelta_day: int = 0):
             outp = '\n'.join(output)
         return f'`{outp}`'
         
-    
-    if date_in_base:
+    elif date_in_base:
         return 'дата есть в базе'
     
     else:

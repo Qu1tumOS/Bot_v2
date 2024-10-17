@@ -1,6 +1,5 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from datetime import date, timedelta
 
 from Keyboard.inline_creator import create_inline_kb
 from DataBase.dao import User
@@ -16,7 +15,7 @@ async def log(callback: CallbackQuery):
         text=await print_day(user),
         parse_mode='MarkdownV2',
         reply_markup=create_inline_kb(3,
-                                        day_01='<',
+                                        day_07=' ',
                                         more_info='инфо',
                                         day_1='>',
                                         log_button='назад'))
