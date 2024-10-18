@@ -34,7 +34,7 @@ async def main() -> None:
     scheduler.add_job(add_lessons_to_table,
                       'cron',
                       hour='10',
-                      minute='18')
+                      minute='20')
 
     scheduler.start()
     
