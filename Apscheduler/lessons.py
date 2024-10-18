@@ -32,7 +32,7 @@ async def add_lessons_to_table():
     if today == date_site and not await Lesson.find_one_or_none(day=today):
         await Lesson.add(
             day=today,
-            lessons=group_par() 
+            lessons=group_par('all') 
         )
 
     elif date_site > today and not await Lesson.find_one_or_none(day=today):
