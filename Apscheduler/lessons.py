@@ -1,5 +1,7 @@
-import logging, requests
+import datetime
 from datetime import date
+import logging
+import requests
 from bs4 import BeautifulSoup as bs
 from DataBase.dao import Lesson
 from Parser.week_lessons import group_par
@@ -16,8 +18,9 @@ def date_in_site() -> list:
     soup = bs(response.text, 'html.parser')
     date = soup.find('li', class_='zgr').text
     
-    # last_update = soup.find('div', class_='ref').text[13:]
-    date2 = date(int(date[6:10]), int(date[3:5]), int(date[:2]))
+    last_update = soup.find('div', class_='ref').text[13:]
+    
+    date2 = datetime.date(int(date[6:10]), int(date[3:5]), int(date[:2]))
 
     return date2
 
