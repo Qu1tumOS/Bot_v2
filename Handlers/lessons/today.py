@@ -91,7 +91,7 @@ async def log(callback: CallbackQuery):
     week_number = date.today().weekday()
     
     if page != 0:
-        if page + week_number == 6:
+        if page + week_number == 5:
             await callback.message.edit_text(
             text=await print_day(user, page),
             parse_mode='MarkdownV2',
