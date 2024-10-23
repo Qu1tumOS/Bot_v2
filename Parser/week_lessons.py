@@ -3,13 +3,12 @@ from bs4 import BeautifulSoup as bs
 from Parser.parser import url_groups
 from datetime import date, timedelta
 from DataBase.dao import Lesson
-from pprint import pprint
 import redis, json
+from lexicon import lessons_call, descript
 
 
 
 def group_par(group: str) -> dict:
-    descript = 'ПМ. ОП. ОГСЭ. ЕН. ОУД. СГ. УП.'
     url = 'http://raspisanie.nnst.ru/public/www/' + url_groups[group]
 
     response = requests.get(url)
@@ -53,7 +52,7 @@ def group_par(group: str) -> dict:
     return rasp
 
 
-async def print_day(user, timedelta_day: int = 0):
+async def print_day(user, timedelta_day: int = 0, more: bool = False):
     redis_connect = redis.Redis(host='localhost')
     
     value = redis_connect.get(name=f'{str(user.group)}')
@@ -74,16 +73,21 @@ async def print_day(user, timedelta_day: int = 0):
     
     week = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'][date_datetime.weekday()]
      
-        
     if date_str in lessons_list:
         tabs = 24
         output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
         
-        for i in lessons_list[date_str ]:
+        for num, i in enumerate(lessons_list[date_str]):
             lesson = i[user.subgroup-1][0]
             cab = i[user.subgroup-1][1]
+            teacher = i[user.subgroup][2]
             
             output.append(f'{lesson.ljust(tabs, " ")} {cab}')
+            if more == True:
+                if teacher != ' - ':
+                    output.append(f'{teacher.ljust(tabs, " ")}')
+                    output.append(lessons_call[date_datetime.weekday()][num])
+                output.append(f' ')
 
             outp = '\n'.join(output)
         return f'`{outp}`'
@@ -97,10 +101,12 @@ async def print_day(user, timedelta_day: int = 0):
             cab = i[user.subgroup-1][1]
             
             output.append(f'{lesson.ljust(tabs, " ")} {cab}')
+            # if more == True:
+            #     if teacher != ' - ':
+            #         output.append(f'{teacher.ljust(tabs, " ")}')
+            #         output.append(lessons_call[date_datetime.weekday()][num])
+            #     output.append(f' ')
 
             outp = '\n'.join(output)
         return f'`{outp}`'
-        
-    
-    else:
-        return 'Выходной'
+    return 'Выходной'

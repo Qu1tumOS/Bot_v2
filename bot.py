@@ -4,7 +4,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import Bot, Dispatcher, Router
 from config import settings
 from Handlers import start, registration_check, other_handlers
-from Handlers.lessons import today
+from Handlers.lessons import today, today_more_info
 from Handlers.settings import open_settings
 from DataBase.connect import engine, Base
 from Apscheduler.lessons import add_lessons_to_table
@@ -26,6 +26,8 @@ async def main() -> None:
     
     dp.include_router(start.router)
     dp.include_router(today.router)
+    dp.include_router(today_more_info.router)
+    
     dp.include_router(open_settings.router)
     
     dp.include_router(other_handlers.router)
@@ -35,8 +37,9 @@ async def main() -> None:
     
     scheduler.add_job(add_lessons_to_table,
                       'cron',
-                      hour='09',
-                      minute='00')
+                      hour='01',
+                      minute='16',
+                      second='20')
 
     scheduler.start()
     

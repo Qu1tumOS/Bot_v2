@@ -4,6 +4,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup as bs
 from DataBase.dao import User, Lesson
+from lexicon import descript
 
 
 
@@ -24,8 +25,6 @@ def date_in_site() -> list:
     return date2
 
 def lessons_one_day() -> dict:
-
-    descript = 'ПМ. ОП. ОГСЭ. ЕН. ОУД. СГ. УП.'
     url = 'http://raspisanie.nnst.ru/public/www/hg.htm'
 
     response = requests.get(url)
@@ -39,42 +38,33 @@ def lessons_one_day() -> dict:
     for tr in data[begin:]:
         two_subgroup_para = []
         for td in tr:
-            check_para = td.find('a', class_='z1')
-            check_cab = td.find('a', class_='z2')
-            para = check_para.text if check_para else ' - '
-            cab = check_cab.text if check_cab else ' - '
+            para = td.find('a', class_='z1').text if td.find('a', class_='z1') else ' - '
+            cab = td.find('a', class_='z2').text if td.find('a', class_='z2') else ' - '
+            teacher = td.find('a', class_='z3').text if td.find('a', class_='z3') else ' - '
 
             if para.split('.', 1)[0] in descript:
                 para = para.split('.', 1)[1][2:]
                 if para[0] == ' ':
                     para = para.replace(' ', '', 1)
-
+            para = para[:-4] if para in ['Экологические основы при'] else para
+                    
+            info = [para, cab, teacher] # данные будут храниться в таком типе [предмет, кабинет, преподователь]
+            info_for_all = [info, info]
 
 
             if td.get('rowspan') == '6':
                 date = td.text
                 rasp[date] = []
 
-            elif td.get('class') == ['nul']:
+            elif td.get('class') in [['nul'], ['ur']]:
                 if td.get('colspan') == '2':
-                    rasp[date].append([[para, cab], [para, cab]])
+                    rasp[date].append([info_for_all])
                 else:
                     if not two_subgroup_para:
-                        two_subgroup_para.append([para, cab])
+                        two_subgroup_para.append(info)
                     else:
-                        two_subgroup_para.append([para, cab])
+                        two_subgroup_para.append(info)
                         rasp[date].append(two_subgroup_para)
-
-            elif td.get('class') == ['ur']:
-                if td.get('colspan') == '2':
-                    rasp[date].append([[para, cab], [para, cab]])
-                else:
-                    if not two_subgroup_para:
-                        two_subgroup_para.append([para, cab])
-                    else:
-                        two_subgroup_para.append([para, cab])
-                        rasp[date].append(two_subgroup_para)
-
     return rasp
 
 async def add_lessons_to_table():
