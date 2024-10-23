@@ -45,23 +45,25 @@ async def log(callback: CallbackQuery):
     page = int(redis_connect.get(name=id))-1
     
     if page != 0:
-        await callback.message.edit_text(
-            text=await print_day(user, page),
-            parse_mode='MarkdownV2',
-            reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            more_info='инфо',
-                                            tomorrow_lessons='>',
-                                            today_lessons='назад'))
-    elif page == week_number * -1:
-        await callback.message.edit_text(
-            text=await print_day(user, page),
-            parse_mode='MarkdownV2',
-            reply_markup=create_inline_kb(3,
-                                            pass_day=' ',
-                                            more_info='инфо',
-                                            tomorrow_lessons='>',
-                                            log_button='назад'))
+        if page != week_number * -1:
+            await callback.message.edit_text(
+                text=await print_day(user, page),
+                parse_mode='MarkdownV2',
+                reply_markup=create_inline_kb(3,
+                                                yesterday_lessons='<',
+                                                more_info='инфо',
+                                                tomorrow_lessons='>',
+                                                today_lessons='назад'))
+        else:
+            await callback.message.edit_text(
+                text=await print_day(user, page),
+                parse_mode='MarkdownV2',
+                reply_markup=create_inline_kb(3,
+                                                pass_day=' ',
+                                                more_info='инфо',
+                                                tomorrow_lessons='>',
+                                                today_lessons='назад'))
+    
     else:
         await callback.message.edit_text(
             text=await print_day(user, page),
@@ -89,16 +91,8 @@ async def log(callback: CallbackQuery):
     week_number = date.today().weekday()
     
     if page != 0:
-        await callback.message.edit_text(
-            text=await print_day(user, page),
-            parse_mode='MarkdownV2',
-            reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            more_info='инфо',
-                                            tomorrow_lessons='>',
-                                            today_lessons='назад'))
-    elif page + week_number == 6:
-        await callback.message.edit_text(
+        if page + week_number == 6:
+            await callback.message.edit_text(
             text=await print_day(user, page),
             parse_mode='MarkdownV2',
             reply_markup=create_inline_kb(3,
@@ -106,6 +100,16 @@ async def log(callback: CallbackQuery):
                                             more_info='инфо',
                                             pass_day=' ',
                                             log_button='назад'))
+            
+        else:
+            await callback.message.edit_text(
+                text=await print_day(user, page),
+                parse_mode='MarkdownV2',
+                reply_markup=create_inline_kb(3,
+                                                yesterday_lessons='<',
+                                                more_info='инфо',
+                                                tomorrow_lessons='>',
+                                                today_lessons='назад'))
     else:
         await callback.message.edit_text(
             text=await print_day(user, page),
