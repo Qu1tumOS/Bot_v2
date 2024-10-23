@@ -25,7 +25,7 @@ def date_in_site() -> list:
 
 def lessons_one_day() -> dict:
 
-    descript = 'ПМ. ОП. ОГСЭ. ЕН. ОУД.'
+    descript = 'ПМ. ОП. ОГСЭ. ЕН. ОУД. СГ. УП.'
     url = 'http://raspisanie.nnst.ru/public/www/hg.htm'
 
     response = requests.get(url)
