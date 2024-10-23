@@ -94,7 +94,7 @@ async def print_day(user, timedelta_day: int = 0):
         tabs = 24
         output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
         
-        for i in date_in_base[str(user.group)]:
+        for i in date_in_base[int(user.group)]:
             lesson = i[user.subgroup-1][0]
             cab = i[user.subgroup-1][1]
             
