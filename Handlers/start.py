@@ -46,7 +46,7 @@ async def log(callback: CallbackQuery):
         await callback.message.edit_text(
             text=f'•{" "*40}•',
             reply_markup=create_inline_kb(2,
-                                          day_0='пары',
+                                          today_lessons='пары',
                                           settings='меню',
                                           fast_success='быстрый доступ'))
     await callback.answer()
@@ -77,7 +77,7 @@ async def add_subgroup(callback: CallbackQuery):
     await callback.message.edit_text(
             text=f'•{" "*40}•',
             reply_markup=create_inline_kb(2,
-                                          day_0='пары',
+                                          today_lessons='пары',
                                           settings='меню',
                                           fast_success='быстрый доступ'))
     await callback.answer()

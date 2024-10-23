@@ -65,10 +65,12 @@ async def print_day(user, timedelta_day: int = 0):
             )
         value = redis_connect.get(name=f'{str(user.group)}')
     redis_connect.close()
+    
+    
 
     
     lessons_list = json.loads(value)
-    date_datetime = date.today() + timedelta(days=timedelta_day)
+    date_datetime = date.today() + timedelta(days=timedelta_day+1)
     date_in_base = await Lesson.find_one_or_none(day=date_datetime)
     date_str = f'{date_datetime:%d.%m.%Y}'
     
@@ -89,7 +91,18 @@ async def print_day(user, timedelta_day: int = 0):
         return f'`{outp}`'
         
     elif date_in_base:
-        return 'дата есть в базе'
+        tabs = 24
+        output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
+        
+        for i in date_in_base[user.group]:
+            lesson = i[user.subgroup-1][0]
+            cab = i[user.subgroup-1][1]
+            
+            output.append(f'{lesson.ljust(tabs, " ")} {cab}')
+
+            outp = '\n'.join(output)
+        return f'`{outp}`'
+        
     
     else:
         return 'расписания на эту дату нет'
