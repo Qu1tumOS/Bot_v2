@@ -1,5 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
+from datetime import date
 
 from Keyboard.inline_creator import create_inline_kb
 from DataBase.dao import User
@@ -39,6 +40,7 @@ async def log(callback: CallbackQuery):
     id = callback.from_user.id
     user = await User.user_info(id = id)
     redis_connect = redis.Redis(host='localhost')
+    week_number = date.today().weekday()
     
     page = int(redis_connect.get(name=id))-1
     
@@ -51,6 +53,15 @@ async def log(callback: CallbackQuery):
                                             more_info='инфо',
                                             tomorrow_lessons='>',
                                             today_lessons='назад'))
+    elif page == week_number * -1:
+        await callback.message.edit_text(
+            text=await print_day(user, page),
+            parse_mode='MarkdownV2',
+            reply_markup=create_inline_kb(3,
+                                            pass_day=' ',
+                                            more_info='инфо',
+                                            tomorrow_lessons='>',
+                                            log_button='назад'))
     else:
         await callback.message.edit_text(
             text=await print_day(user, page),
@@ -60,6 +71,7 @@ async def log(callback: CallbackQuery):
                                             more_info='инфо',
                                             tomorrow_lessons='>',
                                             log_button='назад'))
+        
         
     redis_connect.getset(name=id, value=page)
     redis_connect.close()
@@ -74,6 +86,7 @@ async def log(callback: CallbackQuery):
     redis_connect = redis.Redis(host='localhost')
     
     page = int(redis_connect.get(name=id))+1
+    week_number = date.today().weekday()
     
     if page != 0:
         await callback.message.edit_text(
@@ -84,6 +97,15 @@ async def log(callback: CallbackQuery):
                                             more_info='инфо',
                                             tomorrow_lessons='>',
                                             today_lessons='назад'))
+    elif page + week_number == 6:
+        await callback.message.edit_text(
+            text=await print_day(user, page),
+            parse_mode='MarkdownV2',
+            reply_markup=create_inline_kb(3,
+                                            yesterday_lessons='<',
+                                            more_info='инфо',
+                                            pass_day=' ',
+                                            log_button='назад'))
     else:
         await callback.message.edit_text(
             text=await print_day(user, page),
@@ -97,3 +119,8 @@ async def log(callback: CallbackQuery):
     redis_connect.close()
     
     await callback.answer()
+    
+@router.callback_query(F.data == 'pass_day')
+async def log(callback: CallbackQuery):
+    await callback.answer()
+    

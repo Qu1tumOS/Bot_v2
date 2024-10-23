@@ -103,4 +103,4 @@ async def print_day(user, timedelta_day: int = 0):
         
     
     else:
-        return 'расписания на эту дату нет'
+        return 'Выходной'
