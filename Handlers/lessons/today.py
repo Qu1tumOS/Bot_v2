@@ -99,7 +99,7 @@ async def log(callback: CallbackQuery):
                                             yesterday_lessons='<',
                                             more_info='инфо',
                                             pass_day=' ',
-                                            log_button='назад'))
+                                            today_lessons='назад'))
             
         else:
             await callback.message.edit_text(
