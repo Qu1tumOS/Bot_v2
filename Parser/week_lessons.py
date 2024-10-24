@@ -93,7 +93,7 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
             if len(i[user.subgroup-1]) == 3:
                 teacher = i[user.subgroup][2]
             else:
-                teacher = " "
+                teacher = " - "
             
             output.append(f'{lesson.ljust(tabs, " ")} {cab}')
             if more == True:
