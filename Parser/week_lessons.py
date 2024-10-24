@@ -75,7 +75,7 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
     # 'включить после того как новый вид расписания сохранитсяс в бд'
     
     if date_datetime.weekday() != 6:
-        if lessons_list[date_str]:
+        if date_str in lessons_list:
             x = lessons_list[date_str]
         elif date_in_base:
             x = date_in_base.lessons[f'{user.group}']
