@@ -5,6 +5,7 @@ from datetime import date, timedelta
 from DataBase.dao import Lesson
 import redis, json
 from lexicon import lessons_call, descript
+from pprint import pprint
 
 
 
@@ -78,6 +79,7 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
         if date_str in lessons_list:
             x = lessons_list[date_str]
         elif date_in_base:
+            pprint(date_in_base.lessons)
             x = date_in_base.lessons[f'{user.group}']
         else:
             return "расписания на этот день нет"
@@ -86,7 +88,6 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
         output = [f'{(date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'] 
         if date.today().isocalendar().week < date_datetime.isocalendar().week:
             output = [f'''{(date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'''] 
-        
         for num, i in enumerate(x):
             lesson = i[user.subgroup-1][0]
             cab = i[user.subgroup-1][1]
@@ -94,7 +95,6 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
                 teacher = i[user.subgroup][2]
             else:
                 teacher = " - "
-            
             output.append(f'{lesson.ljust(tabs, " ")} {cab}')
             if more == True:
                 if teacher != ' - ':

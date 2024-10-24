@@ -58,7 +58,7 @@ def lessons_one_day() -> dict:
 
             elif td.get('class') in [['nul'], ['ur']]:
                 if td.get('colspan') == '2':
-                    rasp[date].append([info_for_all])
+                    rasp[date].append(info_for_all)
                 else:
                     if not two_subgroup_para:
                         two_subgroup_para.append(info)
