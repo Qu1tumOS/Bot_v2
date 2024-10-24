@@ -84,9 +84,8 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
         
         tabs = 24
         output = [f'{(date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'] 
-        symbol = '• '
         if date.today().isocalendar().week < date_datetime.isocalendar().week:
-            output = [f'''{(symbol + date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'''] 
+            output = [f'''{("•" + date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'''] 
         
         for num, i in enumerate(x):
             lesson = i[user.subgroup-1][0]
