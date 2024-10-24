@@ -6,7 +6,6 @@ from Keyboard.inline_creator import create_inline_kb
 from DataBase.dao import User, Lesson
 from datetime import date
 from Parser.parser import group_to_group_gict, url_groups
-from x import test
 
 test = {'111': [[[[' - ', ' - ', ' - '], [' - ', ' - ', ' - ']]],
          [[[' - ', ' - ', ' - '], [' - ', ' - ', ' - ']]],
