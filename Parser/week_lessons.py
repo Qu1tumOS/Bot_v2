@@ -90,7 +90,10 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
         for num, i in enumerate(x):
             lesson = i[user.subgroup-1][0]
             cab = i[user.subgroup-1][1]
-            teacher = i[user.subgroup][2]
+            if teacher:
+                teacher = i[user.subgroup][2]
+            else:
+                teacher = " "
             
             output.append(f'{lesson.ljust(tabs, " ")} {cab}')
             if more == True:
