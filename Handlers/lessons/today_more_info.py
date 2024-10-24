@@ -116,7 +116,7 @@ async def log(callback: CallbackQuery):
     page = int(redis_connect.get(name=id))+1
     
     if page != 0:
-        if page + week_number == 5:
+        if page + week_number == 12:
             await callback.message.edit_text(
             text=await print_day(user, page, True),
             parse_mode='MarkdownV2',

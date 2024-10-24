@@ -14,11 +14,10 @@ def group_par(group: str) -> dict:
     response = requests.get(url)
     soup = bs(response.text, 'html.parser')
     data = soup.find_all('tr')
-
     rasp = {}
 
     begin = 13
-    end = 62
+    end = 104
 
     for tr in data[begin:end]:
         two_subgroup_para = []
@@ -72,12 +71,24 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
     date_str = f'{date_datetime:%d.%m.%Y}'
     
     week = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'][date_datetime.weekday()]
-     
-    if date_str in lessons_list:
-        tabs = 24
-        output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
+    
+    # 'включить после того как новый вид расписания сохранитсяс в бд'
+    
+    if date_datetime.weekday() != 6:
+        if lessons_list[date_str]:
+            x = lessons_list[date_str]
+        elif date_in_base:
+            x = date_in_base.lessons[f'{user.group}']
+        else:
+            return "расписания на этот день нет"
         
-        for num, i in enumerate(lessons_list[date_str]):
+        tabs = 24
+        output = [f'{(date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'] 
+        
+        if date.today().isocalendar().week < date_datetime.isocalendar().week:
+            output = [f'{('• ' + date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'] 
+        
+        for num, i in enumerate(x):
             lesson = i[user.subgroup-1][0]
             cab = i[user.subgroup-1][1]
             teacher = i[user.subgroup][2]
@@ -91,22 +102,46 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
 
             outp = '\n'.join(output)
         return f'`{outp}`'
+    return "Выходной"
         
-    elif date_in_base:
-        tabs = 24
-        output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
-        
-        for i in date_in_base.lessons[str(user.group)]:
-            lesson = i[user.subgroup-1][0]
-            cab = i[user.subgroup-1][1]
+    if date_datetime.weekday() != 6:
+        if date_str in lessons_list:
+            tabs = 24
+            if date.today().isocalendar().week < date_datetime.isocalendar().week:
+                output = [f'{('• ' + date_str[:-5]).rjust(15, " ")} {week.ljust(tabs-12, " ")}']
+            else:
+                output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
             
-            output.append(f'{lesson.ljust(tabs, " ")} {cab}')
-            # if more == True:
-            #     if teacher != ' - ':
-            #         output.append(f'{teacher.ljust(tabs, " ")}')
-            #         output.append(lessons_call[date_datetime.weekday()][num])
-            #     output.append(f' ')
+            for num, i in enumerate(lessons_list[date_str]):
+                lesson = i[user.subgroup-1][0]
+                cab = i[user.subgroup-1][1]
+                teacher = i[user.subgroup][2]
+                
+                output.append(f'{lesson.ljust(tabs, " ")} {cab}')
+                if more == True:
+                    if teacher != ' - ':
+                        output.append(f'{teacher.ljust(tabs, " ")}')
+                        output.append(lessons_call[date_datetime.weekday()][num])
+                    output.append(f' ')
 
-            outp = '\n'.join(output)
-        return f'`{outp}`'
+                outp = '\n'.join(output)
+            return f'`{outp}`'
+            
+        elif date_in_base:
+            tabs = 24
+            output = [f'{date_str[:-5].rjust(15, " ")} {week.ljust(tabs-12, " ")}']
+            
+            for num, i in enumerate(date_in_base.lessons[str(user.group)]):
+                lesson = i[user.subgroup-1][0]
+                cab = i[user.subgroup-1][1]
+                
+                output.append(f'{lesson.ljust(tabs, " ")} {cab}')
+                # if more == True:
+                #     if teacher != ' - ':
+                #         output.append(f'{teacher.ljust(tabs, " ")}')
+                #         output.append(lessons_call[date_datetime.weekday()][num])
+                #     output.append(f' ')
+
+                outp = '\n'.join(output)
+            return f'`{outp}`'
     return 'Выходной'
