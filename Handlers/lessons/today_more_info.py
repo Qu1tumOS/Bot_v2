@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from datetime import date
+from datetime import date, timedelta
 
 from Keyboard.inline_creator import create_inline_kb
 from DataBase.dao import User
@@ -20,6 +20,9 @@ async def log(callback: CallbackQuery):
 
     
     page = int(redis_connect.get(name=id))
+    page_day_number = (date.today() + timedelta(page)).weekday()
+    if page_day_number == 6:
+        page += 1
      
     if page != 0:
         if page == week_number * -1:
@@ -68,9 +71,14 @@ async def log(callback: CallbackQuery):
     redis_connect = redis.Redis(host='localhost')
     
     page = redis_connect.get(name=id)
-    
     if not page:
         redis_connect.set(name=id, value=0)
+        
+    page_day_number = (date.today() + timedelta(page)).weekday()
+    if page_day_number == 6:
+        page += 1
+    
+    
         
     redis_connect.getset(name=id, value=0)
     redis_connect.close()
@@ -94,6 +102,9 @@ async def log(callback: CallbackQuery):
     week_number = date.today().weekday()
     
     page = int(redis_connect.get(name=id))-1
+    page_day_number = (date.today() + timedelta(page)).weekday()
+    if page_day_number == 6:
+        page -= 1
     
 
     
@@ -141,6 +152,9 @@ async def log(callback: CallbackQuery):
     week_number = date.today().weekday()
    
     page = int(redis_connect.get(name=id))+1
+    page_day_number = (date.today() + timedelta(page)).weekday()
+    if page_day_number == 6:
+        page += 1
     
     if page != 0:
         if page + week_number == 12:

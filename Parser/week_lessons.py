@@ -79,7 +79,6 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
         if date_str in lessons_list:
             x = lessons_list[date_str]
         elif date_in_base:
-            pprint(date_in_base.lessons)
             x = date_in_base.lessons[f'{user.group}']
         else:
             return "расписания на этот день нет"
@@ -104,5 +103,4 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
 
             outp = '\n'.join(output)
         return f'`{outp}`'
-    return "Выходной"
         
