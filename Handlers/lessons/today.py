@@ -76,8 +76,8 @@ async def log(callback: CallbackQuery):
     
     if not page:
         redis_connect.set(name=id, value=0)
-        page_day_number = (date.today() + timedelta(page)).weekday()
-    elif page_day_number == 6:
+    page_day_number = (date.today() + timedelta(page)).weekday()
+    if page_day_number == 6:
         page += 1
     else:
         page = 0
