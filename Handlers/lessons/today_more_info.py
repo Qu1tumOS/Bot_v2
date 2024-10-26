@@ -16,21 +16,48 @@ async def log(callback: CallbackQuery):
     id = callback.from_user.id
     user = await User.user_info(id = id)
     redis_connect = redis.Redis(host='localhost')
+    week_number = date.today().weekday()
+
     
     page = int(redis_connect.get(name=id))
-    
-    if not page:
-        redis_connect.set(name=id, value=0)
-    redis_connect.close()
-        
-    await callback.message.edit_text(
-        text=await print_day(user, page, more=True),
-        parse_mode='MarkdownV2',
-        reply_markup=create_inline_kb(3,
-                                        yesterday_lessons_more_info='<',
-                                        view_lessons='инфо',
-                                        tomorrow_lessons_more_info='>',
-                                        log_button='назад'))
+     
+    if page != 0:
+        if page == week_number * -1:
+            await callback.message.edit_text(
+                text=await print_day(user, page, True),
+                parse_mode='MarkdownV2',
+                reply_markup=create_inline_kb(3,
+                                                pass_day=' ',
+                                                view_lessons='инфо',
+                                                tomorrow_lessons_more_info='>',
+                                                today_lessons_more_info='назад'))
+        elif page + week_number == 12:
+            await callback.message.edit_text(
+                text=await print_day(user, page, True),
+                parse_mode='MarkdownV2',
+                reply_markup=create_inline_kb(3,
+                                                yesterday_lessons_more_info='<',
+                                                view_lessons='инфо',
+                                                pass_day=' ',
+                                                today_lessons_more_info='назад'))
+        else:
+            await callback.message.edit_text(
+                text=await print_day(user, page, True),
+                parse_mode='MarkdownV2',
+                reply_markup=create_inline_kb(3,
+                                                yesterday_lessons_more_info='<',
+                                                view_lessons='инфо',
+                                                tomorrow_lessons_more_info='>',
+                                                today_lessons_more_info='назад'))
+    else:
+        await callback.message.edit_text(
+            text=await print_day(user, page, True),
+            parse_mode='MarkdownV2',
+            reply_markup=create_inline_kb(3,
+                                            yesterday_lessons_more_info='<',
+                                            view_lessons='инфо',
+                                            tomorrow_lessons_more_info='>',
+                                            log_button='назад'))
     await callback.answer()
     
 
