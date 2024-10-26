@@ -71,7 +71,6 @@ async def log(callback: CallbackQuery):
     id = callback.from_user.id
     user = await User.user_info(id = id)
     redis_connect = redis.Redis(host='localhost')
-    week_number = date.today().weekday()
     
     page = int(redis_connect.get(name=id))
     page_day_number = (date.today() + timedelta(page)).weekday()
@@ -80,6 +79,8 @@ async def log(callback: CallbackQuery):
         redis_connect.set(name=id, value=0)
     elif page_day_number == 6:
         page += 1
+    else:
+        page = 0
 
         
     await callback.message.edit_text(
