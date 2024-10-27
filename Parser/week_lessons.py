@@ -49,6 +49,7 @@ def group_par(group: str) -> dict:
                     two_subgroup_para.append(info)
                     if len(two_subgroup_para) == 2:
                         rasp[date_site].append(two_subgroup_para)
+    pprint(rasp)
     return rasp
 
 
@@ -86,14 +87,12 @@ async def print_day(user, timedelta_day: int = 0, more: bool = False):
         tabs = 24
         output = [f'{(date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'] 
         if date.today().isocalendar().week < date_datetime.isocalendar().week:
-            output = [f'''{(date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'''] 
+            output = [f'''{('-' + date_str[:-5]).rjust(15, " ")} {week.ljust(12, " ")}'''] 
         for num, i in enumerate(x):
             lesson = i[user.subgroup-1][0]
             cab = i[user.subgroup-1][1]
-            if len(i[user.subgroup-1]) == 3:
-                teacher = i[user.subgroup][2]
-            else:
-                teacher = " - "
+            teacher = i[user.subgroup-1][2]
+            
             output.append(f'{lesson.ljust(tabs, " ")} {cab}')
             if more == True:
                 if teacher != ' - ':
