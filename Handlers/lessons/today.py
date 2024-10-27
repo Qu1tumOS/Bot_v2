@@ -72,11 +72,10 @@ async def log(callback: CallbackQuery):
     user = await User.user_info(id = id)
     redis_connect = redis.Redis(host='localhost')
     
+ 
+    redis_connect.set(name=id, value=0)
     page = int(redis_connect.get(name=id))
-    
-    if not page:
-        redis_connect.set(name=id, value=0)
-        page = int(redis_connect.get(name=id))
+
         
     page_day_number = (date.today() + timedelta(page)).weekday()
     if page_day_number == 6:
