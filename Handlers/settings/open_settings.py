@@ -11,7 +11,6 @@ router = Router()
 
 dates = list()
 async def get_dates_from_db():
-    global dates
     if dates:
         dates.clear()
     dates = [str(i.day) for i in await Lesson.find_all()]
@@ -68,7 +67,7 @@ async def beta_button_2(callback: CallbackQuery):
 
         
 
-@router.callback_query(F.data.in_(['2024-10-24', '2024-10-25', '2024-10-26', '2024-10-28']))
+@router.callback_query(F.data.in_(dates))
 async def print_day22(callback: CallbackQuery):
     
     print(dates)
