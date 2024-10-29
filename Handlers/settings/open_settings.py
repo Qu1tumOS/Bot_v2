@@ -68,7 +68,7 @@ async def beta_button_2(callback: CallbackQuery):
 
         
 
-@router.callback_query(F.data.in_(dates))
+@router.callback_query(F.data.in_(['2024-10-24', '2024-10-25', '2024-10-26', '2024-10-28']))
 async def print_day22(callback: CallbackQuery):
     
     print(dates)
