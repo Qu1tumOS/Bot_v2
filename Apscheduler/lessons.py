@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from DataBase.dao import User, Lesson
 from lexicon import descript
+from Handlers.settings.open_settings import get_dates_from_db
 
 
 
@@ -87,3 +88,5 @@ async def add_lessons_to_table():
             )
         except Exception as x:
             logger.error(f'error - [{x}]')
+    
+    await get_dates_from_db()

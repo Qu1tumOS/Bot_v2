@@ -31,13 +31,8 @@ class BaseDAO:
     async def find_all(cls, **filter_by):
         result: MappingResult = await cls.__get_query_result(**filter_by)
         return result.all()
-    @classmethod
-    async def return_all(cls):
-        async with async_session_maker() as session:
-            query = select(cls.model)
-            data = await session.execute(query)
-            return data.mappings().all()
-        
+    
+
     @classmethod
     async def add(cls, **data):
         async with async_session_maker() as session:
