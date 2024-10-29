@@ -15,6 +15,7 @@ async def get_dates_from_db():
     if dates:
         dates.clear()
     dates = [str(i.day) for i in await Lesson.find_all()]
+    print(dates)
 
 
 @router.callback_query(F.data == 'settings')
