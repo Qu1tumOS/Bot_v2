@@ -19,9 +19,8 @@ async def get_dates_from_db():
 
 @router.callback_query(F.data == 'settings')
 async def log(callback: CallbackQuery):
-    if not dates:
-        for i in await Lesson.find_all():
-            dates.append(str(i.day))
+    await get_dates_from_db()
+    
     await callback.message.edit_text(
         text='меню',
         parse_mode='MarkdownV2',
