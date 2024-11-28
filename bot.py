@@ -14,9 +14,9 @@ from Apscheduler.lessons import add_lessons_to_table
 router = Router()
 
 async def main() -> None:
-    # async with engine.begin() as conn:
-    #     await conn.run_sync(Base.metadata.drop_all) #----- удаление БД ------
-    #     await conn.run_sync(Base.metadata.create_all) #----- создание новой ------
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all) #----- удаление БД ------
+        await conn.run_sync(Base.metadata.create_all) #----- создание новой ------
 
     bot = Bot(token=settings.BOT_TOKEN)
     dp = Dispatcher()
