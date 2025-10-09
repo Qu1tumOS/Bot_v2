@@ -17,12 +17,12 @@ class RegisterCheck(BaseFilter):
 class GroupCheck(BaseFilter):
     async def __call__(self, callback: CallbackQuery) -> bool:
         user = await User.user_info(callback.from_user.id)
-        return user.group == None or user.subgroup == None
+        return user.group == None or user.subgroup == None # type: ignore
 
 
 @router.callback_query(F.data != 'log_button', RegisterCheck())
 async def check_register(callback: CallbackQuery):
-    await callback.message.edit_text(
+    await callback.message.edit_text( # type: ignore
         text='тебя нет в базе',
         reply_markup=create_inline_kb(1,
                                       log_button='Регистрация')

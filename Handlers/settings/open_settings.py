@@ -11,6 +11,7 @@ router = Router()
 
 dates = list()
 async def get_dates_from_db():
+    global dates
     if dates:
         dates.clear()
     dates = [str(i.day) for i in await Lesson.find_all()]
@@ -33,7 +34,7 @@ async def log(callback: CallbackQuery):
     
 async def create_dict_for_keyboard(year : int, month :int):
     weekday = date(year, month, 1).weekday()                                        #день недели первого дня месяца
-    dates_dict = {f'{i}':'ㅤ' for i in range(weekday)}                              #заполняем словарь пустыми кнопками до первого числа
+    dates_dict = {f'{i}':'ㅤ' for i in range(weekday+6)}                              #заполняем словарь пустыми кнопками до первого числа
     
     for i in range(1, monthrange(year, month)[1]+1):                                #заполняем словарь датами на месяц
         date_dt = date(year, month, i)                                              #дата в формате datetime
@@ -47,9 +48,10 @@ async def create_dict_for_keyboard(year : int, month :int):
                 
     max_len = [36, 30][len(dates_dict) <= 30]                                       #длина до которой нужно дополнить словарь (30 или 36)
     
-    while len(dates_dict) < max_len:                                                #пока длина словаря не достигла нужного значения
-        dates_dict[f'{len(dates_dict)}'] = 'ㅤ'                                      #добавляем в словарь пустые значения
     
+    while len(dates_dict) < max_len:                                                #пока длина словаря не достигла нужного значения
+        dates_dict[f'{len(dates_dict)}'] = 'ㅤ'                                     #добавляем в словарь пустые значения
+    dates_dict.update({'0':'пн', '1':'вт', '2':'ср', '3':'чт', '4':'пт', '5':'сб'})
     return dates_dict # возвращаем словарь
 
 @router.callback_query(F.data == 'archive')
@@ -58,14 +60,16 @@ async def beta_button_2(callback: CallbackQuery):
     new_dict = await create_dict_for_keyboard(2024, int(month))
     
     await callback.message.edit_text(
-        text=f'`•             месяц            •\nпн    вт    ср    чт    пт    сб\nㅤ`',
+        text=f'`•            месяц           •`',
         parse_mode='MarkdownV2',
         reply_markup=create_inline_kb(6,
                                       **new_dict,
                                       settings='назад'))
     await callback.answer('бета')
 
-        
+@router.callback_query(F.data.in_(['1', '2', '3', '4', '5', '0']))     
+async def answer(callback: CallbackQuery):
+    await callback.answer('это день недели')
 
 @router.callback_query(F.data.in_(dates))
 async def print_day22(callback: CallbackQuery):
