@@ -58,7 +58,7 @@ async def create_dict_for_keyboard(year : int, month :int):
 async def beta_button_2(callback: CallbackQuery):
     month = f'{date.today():%m}'
     year = f'{date.today():%Y}'
-    new_dict = await create_dict_for_keyboard(year, int(month))
+    new_dict = await create_dict_for_keyboard(int(year), int(month))
     
     await callback.message.edit_text(
         text=f'`•            месяц           •`',
