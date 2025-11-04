@@ -11,18 +11,37 @@ import redis
 router = Router()
 
 
-@router.callback_query(F.data == 'view_lessons')
+@router.callback_query(F.data.in_(['today_lessons', 'tomorrow', 'yesterday']))
 async def log(callback: CallbackQuery):
     id = callback.from_user.id
     user = await User.user_info(id = id)
     redis_connect = redis.Redis(host='localhost')
     week_number = date.today().weekday()
-        
+    data = callback.data 
+    
 
-    page = int(redis_connect.get(name=id))
-    page_day_number = (date.today() + timedelta(page)).weekday()
-    if page_day_number == 6:
-        page += 1
+        
+    if 'today' in data:
+        redis_connect.set(name=id, value=0)
+        page = int(redis_connect.get(name=id))
+        page_day_number = (date.today() + timedelta(page)).weekday()
+        if page_day_number == 6:
+            page += 1
+        else:
+            page = 0
+    elif 'tomorrow' in data:
+        page = int(redis_connect.get(name=id))+1
+        page_day_number = (date.today() + timedelta(page)).weekday()
+    
+        if page_day_number == 6:
+            page += 1
+    elif 'yesterday' in data:
+        page = int(redis_connect.get(name=id))-1
+        page_day_number = (date.today() + timedelta(page)).weekday()
+        if page_day_number == 6:
+            page -= 1
+    else:
+        pass
     
     
     if page != 0:
@@ -32,16 +51,16 @@ async def log(callback: CallbackQuery):
                 parse_mode='MarkdownV2',
                 reply_markup=create_inline_kb(3,
                                                 pass_day=' ',
-                                                view_lessons_more_info='инфо',
-                                                tomorrow_lessons='>',
+                                                more='инфо',
+                                                tomorrow='>',
                                                 today_lessons='назад'))
         elif page + week_number == 12:
             await callback.message.edit_text(
             text=await print_day(user, page),
             parse_mode='MarkdownV2',
             reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            view_lessons_more_info='инфо',
+                                            yesterday='<',
+                                            more='инфо',
                                             pass_day=' ',
                                             today_lessons='назад'))
             
@@ -50,152 +69,27 @@ async def log(callback: CallbackQuery):
                 text=await print_day(user, page),
                 parse_mode='MarkdownV2',
                 reply_markup=create_inline_kb(3,
-                                                yesterday_lessons='<',
-                                                view_lessons_more_info='инфо',
-                                                tomorrow_lessons='>',
+                                                yesterday='<',
+                                                more='инфо',
+                                                tomorrow='>',
                                                 today_lessons='назад'))
     else:
         await callback.message.edit_text(
             text=await print_day(user, page),
             parse_mode='MarkdownV2',
             reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            view_lessons_more_info='инфо',
-                                            tomorrow_lessons='>',
+                                            yesterday='<',
+                                            more='инфо',
+                                            tomorrow='>',
                                             log_button='назад'))
-    await callback.answer()
     
-    
-@router.callback_query(F.data == 'today_lessons')
-async def log(callback: CallbackQuery):
-    id = callback.from_user.id
-    user = await User.user_info(id = id)
-    redis_connect = redis.Redis(host='localhost')
-    
- 
-    redis_connect.set(name=id, value=0)
-    page = int(redis_connect.get(name=id))
-
-        
-    page_day_number = (date.today() + timedelta(page)).weekday()
-    if page_day_number == 6:
-        page += 1
-    else:
-        page = 0
-
-        
-    await callback.message.edit_text(
-        text=await print_day(user, page),
-        parse_mode='MarkdownV2',
-        reply_markup=create_inline_kb(3,
-                                        yesterday_lessons='<',
-                                        view_lessons_more_info='инфо',
-                                        tomorrow_lessons='>',
-                                        log_button='назад'))
-    
-    redis_connect.getset(name=id, value=page)
-    redis_connect.close()
-    await callback.answer()
-    
-
-@router.callback_query(F.data == 'yesterday_lessons')
-async def log(callback: CallbackQuery):
-    id = callback.from_user.id
-    user = await User.user_info(id = id)
-    redis_connect = redis.Redis(host='localhost')
-    week_number = date.today().weekday()
-    
-    page = int(redis_connect.get(name=id))-1
-    page_day_number = (date.today() + timedelta(page)).weekday()
-    if page_day_number == 6:
-        page -= 1
-    
-    if page != 0:
-        if page != week_number * -1:
-            await callback.message.edit_text(
-                text=await print_day(user, page),
-                parse_mode='MarkdownV2',
-                reply_markup=create_inline_kb(3,
-                                                yesterday_lessons='<',
-                                                view_lessons_more_info='инфо',
-                                                tomorrow_lessons='>',
-                                                today_lessons='назад'))
-        else:
-            await callback.message.edit_text(
-                text=await print_day(user, page),
-                parse_mode='MarkdownV2',
-                reply_markup=create_inline_kb(3,
-                                                pass_day=' ',
-                                                view_lessons_more_info='инфо',
-                                                tomorrow_lessons='>',
-                                                today_lessons='назад'))
-    
-    else:
-        await callback.message.edit_text(
-            text=await print_day(user, page),
-            parse_mode='MarkdownV2',
-            reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            view_lessons_more_info='инфо',
-                                            tomorrow_lessons='>',
-                                            log_button='назад'))
-        
-        
     redis_connect.getset(name=id, value=page)
     redis_connect.close()
     
     await callback.answer()
     
     
-@router.callback_query(F.data == 'tomorrow_lessons')
-async def log(callback: CallbackQuery):
-    id = callback.from_user.id
-    user = await User.user_info(id = id)
-    redis_connect = redis.Redis(host='localhost')
-    week_number = date.today().weekday()
-    
-    
-    page = int(redis_connect.get(name=id))+1
-    page_day_number = (date.today() + timedelta(page)).weekday()
-    
-    if page_day_number == 6:
-        page += 1
-        
-    
-    
-    if page != 0:
-        if page + week_number == 12:
-            await callback.message.edit_text(
-            text=await print_day(user, page),
-            parse_mode='MarkdownV2',
-            reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            view_lessons_more_info='инфо',
-                                            pass_day=' ',
-                                            today_lessons='назад'))
-            
-        else:
-            await callback.message.edit_text(
-                text=await print_day(user, page),
-                parse_mode='MarkdownV2',
-                reply_markup=create_inline_kb(3,
-                                                yesterday_lessons='<',
-                                                view_lessons_more_info='инфо',
-                                                tomorrow_lessons='>',
-                                                today_lessons='назад'))
-    else:
-        await callback.message.edit_text(
-            text=await print_day(user, page),
-            parse_mode='MarkdownV2',
-            reply_markup=create_inline_kb(3,
-                                            yesterday_lessons='<',
-                                            view_lessons_more_info='инфо',
-                                            tomorrow_lessons='>',
-                                            log_button='назад'))
-    redis_connect.getset(name=id, value=page)
-    redis_connect.close()
-    
-    await callback.answer()
+
     
 @router.callback_query(F.data == 'pass_day')
 async def log(callback: CallbackQuery):
