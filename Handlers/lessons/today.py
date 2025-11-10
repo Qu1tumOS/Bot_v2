@@ -54,7 +54,7 @@ async def log(callback: CallbackQuery):
         if page == week_number * -1 or text == "расписания на этот день нет":
             buttons = {
                 'pass_day': ' ',
-                'pass_day': 'инфо',
+                'pass_info': 'инфо',
                 'tomorrow': '>',
                 'today_lessons': 'назад'
             }
@@ -90,7 +90,7 @@ async def log(callback: CallbackQuery):
     await callback.answer()
     
     
-@router.callback_query(F.data == 'pass_day')
+@router.callback_query(F.data.in_(['pass_day', 'pass_info']))
 async def log(callback: CallbackQuery):
     await callback.answer()
     
