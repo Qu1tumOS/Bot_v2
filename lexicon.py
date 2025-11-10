@@ -21,5 +21,5 @@ lessons_call = {0: ['8:35 - 10:05',
                     '14:20 - 15:40',
                     '15:50 - 17:10']}
 
-for i in range(2, 5):
+for i in range(2, 5): #создает ключи 2, 3, 4 с тем же расписанием звонков
     lessons_call[i] = lessons_call[1]

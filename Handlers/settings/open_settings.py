@@ -9,7 +9,7 @@ from Keyboard.inline_creator import create_inline_kb
 
 router = Router()
 
-dates = list()
+dates = []
 async def get_dates_from_db():
     global dates
     if dates:
@@ -20,8 +20,6 @@ async def get_dates_from_db():
 
 @router.callback_query(F.data == 'settings')
 async def log(callback: CallbackQuery):
-    await get_dates_from_db()
-    
     await callback.message.edit_text(
         text='меню',
         parse_mode='MarkdownV2',
@@ -56,6 +54,7 @@ async def create_dict_for_keyboard(year : int, month :int):
 
 @router.callback_query(F.data == 'archive')
 async def beta_button_2(callback: CallbackQuery):
+    await get_dates_from_db()
     month = int(f'{date.today():%m}')
     year = int(f'{date.today():%Y}')
     new_dict = await create_dict_for_keyboard(year, month)
@@ -71,16 +70,3 @@ async def beta_button_2(callback: CallbackQuery):
 @router.callback_query(F.data.in_(['1', '2', '3', '4', '5', '0']))     
 async def answer(callback: CallbackQuery):
     await callback.answer('это день недели')
-
-@router.callback_query(F.data.in_(dates))
-async def print_day22(callback: CallbackQuery):
-    
-    print(dates)
-    await callback.message.edit_text(
-        text=f'`good`',
-        parse_mode='MarkdownV2',
-        reply_markup=create_inline_kb(1,
-                                      archive='назад'))
-    await callback.answer()
-    
-    

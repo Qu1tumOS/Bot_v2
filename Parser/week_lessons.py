@@ -49,7 +49,6 @@ def group_par(group: str) -> dict:
                     two_subgroup_para.append(info)
                     if len(two_subgroup_para) == 2:
                         rasp[date_site].append(two_subgroup_para)
-    pprint(rasp)
     return rasp
 
 
