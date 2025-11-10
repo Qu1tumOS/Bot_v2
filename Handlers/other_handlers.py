@@ -9,6 +9,6 @@ router = Router()
 async def delete_message(message: Message):
     await message.delete()
     
-@router.callback_query(F.data.in_(['profile', 'support', 'more', 'fast_success']))     
+@router.callback_query(F.data.in_(['profile', 'support', 'fast_success']))     
 async def answer(callback: CallbackQuery):
     await callback.answer('в разработке')
