@@ -18,13 +18,14 @@ async def log(callback: CallbackQuery):
     redis_connect = redis.Redis(host='localhost')
     week_number = date.today().weekday()
     data = callback.data 
+    if not redis_connect.get(name=f'more_info_{id}'):
+        redis_connect.set(name=f'more_info_{id}', value=-1)
 
     
 
 
     if 'today' in data:
         redis_connect.set(name=id, value=0)
-        redis_connect.set(name=f'more_info_{id}', value=-1)
         
         page = int(redis_connect.get(name=id))
         page_day_number = (date.today() + timedelta(page)).weekday()
