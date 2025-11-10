@@ -87,7 +87,9 @@ async def log(callback: CallbackQuery):
     await callback.answer()
     
     
-
+@router.callback_query(F.data == 'mroe')
+async def log(callback: CallbackQuery):
+    await callback.answer('в разработке')
     
 @router.callback_query(F.data == 'pass_day')
 async def log(callback: CallbackQuery):
