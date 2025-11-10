@@ -11,7 +11,7 @@ import redis
 router = Router()
 
 
-@router.callback_query(F.data.in_(['today_lessons', 'tomorrow', 'yesterday', 'more']))
+@router.callback_query(F.data.in_(['today_lessons', 'tomorrow', 'yesterday']))
 async def log(callback: CallbackQuery):
     id = callback.from_user.id
     user = await User.user_info(id = id)
@@ -86,10 +86,6 @@ async def log(callback: CallbackQuery):
     
     await callback.answer()
     
-    
-@router.callback_query(F.data == 'mroe')
-async def log(callback: CallbackQuery):
-    await callback.answer('в разработке')
     
 @router.callback_query(F.data == 'pass_day')
 async def log(callback: CallbackQuery):
