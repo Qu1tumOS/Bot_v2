@@ -54,7 +54,7 @@ async def log(callback: CallbackQuery):
         if page == week_number * -1 or text == "расписания на этот день нет":
             buttons = {
                 'pass_day': ' ',
-                'more': 'инфо',
+                'pass_day': 'инфо',
                 'tomorrow': '>',
                 'today_lessons': 'назад'
             }
