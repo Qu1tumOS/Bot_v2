@@ -56,8 +56,9 @@ async def create_dict_for_keyboard(year : int, month :int):
 
 @router.callback_query(F.data == 'archive')
 async def beta_button_2(callback: CallbackQuery):
-    month = f'{date.today():%m}'
-    new_dict = await create_dict_for_keyboard(2024, int(month))
+    month = int(f'{date.today():%m}')
+    year = int(f'{date.today():%Y}')
+    new_dict = await create_dict_for_keyboard(year, month)
     
     await callback.message.edit_text(
         text=f'`•            месяц           •`',
