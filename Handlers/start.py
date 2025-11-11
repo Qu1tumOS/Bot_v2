@@ -26,7 +26,7 @@ async def process_start_command(message: Message):
 async def log(callback: CallbackQuery):
     user = await User.user_info(callback.from_user.id)
     redis_connect = redis.Redis(host='localhost')
-    redis_connect.getset(name=f'more_info_{id}', value=-1)
+    redis_connect.getset(name=f'more_info_{id}', value=0)
     redis_connect.close()
     
     if not user:
