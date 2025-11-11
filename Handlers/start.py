@@ -7,6 +7,7 @@ from DataBase.dao import User
 from datetime import date
 from Parser.parser import group_to_group_gict, url_groups
 
+import redis
 
 
 router = Router()
