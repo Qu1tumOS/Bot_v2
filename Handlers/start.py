@@ -24,6 +24,7 @@ async def process_start_command(message: Message):
 
 @router.callback_query(F.data == 'log_button')
 async def log(callback: CallbackQuery):
+    id = callback.from_user.id
     user = await User.user_info(callback.from_user.id)
     redis_connect = redis.Redis(host='localhost')
     redis_connect.getset(name=f'more_info_{id}', value=0)
