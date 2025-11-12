@@ -17,9 +17,7 @@ async def log(callback: CallbackQuery):
     user = await User.user_info(id = id)
     redis_connect = redis.Redis(host='localhost')
     week_number = date.today().weekday()
-    data = callback.data 
-    if not redis_connect.get(name=f'more_info_{id}'):
-        redis_connect.set(name=f'more_info_{id}', value=-1)
+    data = callback.data
 
     
 
