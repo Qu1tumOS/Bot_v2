@@ -3,7 +3,6 @@ from aiogram.types import CallbackQuery
 from datetime import date, timedelta
 from calendar import monthrange, monthcalendar
 from DataBase.dao import Lesson, User
-from Apscheduler.lessons import add_lessons_to_table
 import asyncio
 
 from Keyboard.inline_creator import create_inline_kb
@@ -68,10 +67,6 @@ async def beta_button_2(callback: CallbackQuery):
                                       settings='назад'))
     await callback.answer('бета')
 
-@router.callback_query(F.data == 'support')
-async def settings_sup(callback:CallbackQuery):
-    add_lessons_to_table()
-    await callback.answer('')
 
 @router.callback_query(F.data.in_(['1', '2', '3', '4', '5', '0']))     
 async def answer(callback: CallbackQuery):
