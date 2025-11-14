@@ -71,7 +71,7 @@ async def beta_button_2(callback: CallbackQuery):
 @router.callback_query(F.data == 'support')
 async def settings_sup(callback:CallbackQuery):
     add_lessons_to_table()
-.   await callback.answer('')
+    await callback.answer('')
 
 @router.callback_query(F.data.in_(['1', '2', '3', '4', '5', '0']))     
 async def answer(callback: CallbackQuery):
